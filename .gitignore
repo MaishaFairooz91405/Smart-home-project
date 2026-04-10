@@ -1,13 +1,22 @@
-# Virtual Environment
+# Ignore the entire PyCharm settings folder
+.idea/
+
+# Ignore project-specific module files
+*.iml
+
+# Ignore Python virtual environments
 venv/
 env/
+ENV/
 
-# Python cache
+# Ignore Python bytecode and cache
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
 
-# Database
+# Ignore local database (if using Django/SQLite)
 db.sqlite3
 
-# Environment variables
+# Ignore environment variables/secrets
 .env

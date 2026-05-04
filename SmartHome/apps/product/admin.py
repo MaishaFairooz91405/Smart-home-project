@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import ProductCategory
-
+from .models import Product
 
 class ProductCategoryAdmin(admin.ModelAdmin):
     list_display = [
@@ -10,16 +10,12 @@ class ProductCategoryAdmin(admin.ModelAdmin):
         'created_at',
         'is_deleted'
     ]
-
     search_fields = [
         'title',
     ]
-
     list_filter = [
         'is_deleted',
-        'created_at'
     ]
-
     ordering = ['created_at']
 
     readonly_fields = [
@@ -27,14 +23,40 @@ class ProductCategoryAdmin(admin.ModelAdmin):
         'updated_at'
     ]
 
-    # ✅ 8. Disable add (optional)
     def has_add_permission(self, request):
         return True  # change to False if you want to block adding
 
-    # ✅ 9. Disable delete (optional)
     def has_delete_permission(self, request, obj=None):
         return False  # prevents deletion
 
-
-# ✅ Register model
 admin.site.register(ProductCategory, ProductCategoryAdmin)
+
+class ProductAdmin(admin.ModelAdmin):
+    list_display = [
+        'title',
+        'description',
+        'created_by',
+        'updated_by',
+        'created_at',
+        'is_generic'
+    ]
+    search_fields = [
+        'title',
+    ]
+    list_filter = [
+        'is_generic',
+        'created_by',
+        'updated_by'
+    ]
+    ordering = ['id']
+    readonly_fields = [
+        'created_at',
+        'updated_at'
+    ]
+
+    def has_add_permission(self, request):
+        return True  # change to False if you want to block adding
+
+    def has_delete_permission(self, request, obj=None):
+        return False  # prevents deletion
+admin.site.register(Product, ProductAdmin)

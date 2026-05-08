@@ -38,7 +38,8 @@ class ProductAdmin(admin.ModelAdmin):
         'created_by',
         'updated_by',
         'created_at',
-        'is_generic'
+        'is_generic',
+        'is_deleted'
     ]
     search_fields = [
         'title',

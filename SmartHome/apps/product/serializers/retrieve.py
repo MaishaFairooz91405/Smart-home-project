@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from apps.user.serializer import UserSerializer
 from apps.product.serializer import ProductCategorySerializer
-from product.models import Product
+from apps.product.models import Product
 
 
 class ProductRetrieveSerializer(serializers.ModelSerializer):

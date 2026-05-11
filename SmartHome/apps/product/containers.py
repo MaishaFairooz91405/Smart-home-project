@@ -1,6 +1,11 @@
+from product.repository import ProductRepository
 from product.services import ProductService
-from product.views.product_views import ProductListAPIView
 
 
-def product_create_view():
-    return ProductListAPIView(product_service=ProductService()).as_view()
+class ProductContainer:
+
+    @staticmethod
+    def product_service():
+        repository = ProductRepository()
+
+        return ProductService(repository)

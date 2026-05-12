@@ -2,27 +2,31 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from django.shortcuts import get_object_or_404
+
+from Domain.PaginationDomainModel import PaginationDomainModel
 from apps.product.models import Product
 from apps.common.utilis.common_method import parse_is_generic
-from apps.common.utilis.common_method import parse_is_deleted
 from product.serializers.retrieve import ProductRetrieveSerializer
 from product.serializers.create import ProductCreateSerializer
 from product.serializers.update import ProductUpdateSerializer
 from product.containers import ProductContainer
 from product.services import ProductService
+from utilis.common_method import parse_is_deleted
 
 
 class ProductListAPIView(APIView):
-    product_service = ProductContainer.product_service()
+    def __init__(self):
+        super().__init__()
+        self.product_service = ProductContainer.product_service()
 
     def get(self, request):
         try:
             is_generic = parse_is_generic(request.query_params.get("is_generic"))
-            is_deleted = parse_is_generic(request.query_params.get("is_deleted"))
-
+            is_deleted = parse_is_deleted(request.query_params.get("is_deleted"))
+            pagination = PaginationDomainModel(request)
         except ValueError as e:
             return Response({"error": str(e)}, status=400)
-        products = ProductContainer.product_service().get_products(is_generic=is_generic, is_deleted=is_deleted)
+        products = self.product_service.get_products(is_generic=is_generic, is_deleted=is_deleted, pagination)
         serializer = ProductRetrieveSerializer(products, many=True)
         return Response(serializer.data)
 
@@ -41,22 +45,20 @@ class ProductListAPIView(APIView):
 #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 #
 #
-# class ProductDetailAPIView(APIView):
-#     def get(self, request, pk):
-#         try:
-#             is_generic = parse_is_generic(
-#                 request.query_params.get("is_generic")
-#             )
-#         except ValueError as e:
-#             return Response({"error": str(e)}, status=400)
-#
-#         if is_generic is None:
-#             product = get_object_or_404(Product, id=pk)
-#         else:
-#             product = get_object_or_404(Product, id=pk, is_generic=is_generic)
-#
-#         serializer = ProductRetrieveSerializer(product)
-#         return Response(serializer.data)
+class ProductDetailAPIView(APIView):
+    def __init__(self):
+        super().__init__()
+        self.product_service = ProductContainer.product_service()
+
+    def get(self, request, id):
+        try:
+            is_generic = parse_is_generic(request.query_params.get("is_generic"))
+            is_deleted = parse_is_deleted(request.query_params.get("is_deleted"))
+
+        except ValueError as e:
+            return Response({"error": str(e)}, status=400)
+        product_response = self.product_service.get_product_by_id(id, is_generic=is_generic, is_deleted=is_deleted)
+        return Response(product_response)
 #
 #     def put(self, request, pk):
 #         product = get_object_or_404(Product, pk=pk)

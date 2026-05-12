@@ -28,3 +28,7 @@ def parse_is_deleted(value):
         return False
     else:
         raise ValueError("is_generic must be 'true' or 'false'")
+
+def get_filters(**kwargs):
+    """Build filter dict from provided keyword arguments."""
+    return {k: v for k, v in kwargs.items() if v is not None}

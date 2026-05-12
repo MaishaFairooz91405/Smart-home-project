@@ -1,3 +1,5 @@
+from django.shortcuts import get_object_or_404
+from utilis.filter import get_filters
 from apps.product.models import Product
 
 
@@ -18,13 +20,8 @@ class ProductRepository:
         product.delete()
         return True
 
-    def list(self):
-        return Product.objects.all()
-    def filter_by_generic(self,is_generic):
-        return Product.objects.filter(is_generic=is_generic)
-    def filter_by_deleted(self,is_deleted):
-        return Product.objects.filter(is_deleted=is_deleted)
+    def get(self, filters):
+        return Product.objects.filter(**filters)
 
-
-    def detail(self, data):
-        return Product.objects.get(pk=data['id'])
+    def get_by_id(self, filters):
+        return Product.objects.filter(**filters).first()

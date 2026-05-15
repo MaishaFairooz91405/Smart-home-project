@@ -26,7 +26,7 @@ class ProductListAPIView(APIView):
             pagination = PaginationDomainModel(request)
         except ValueError as e:
             return Response({"error": str(e)}, status=400)
-        products = self.product_service.get_products(is_generic=is_generic, is_deleted=is_deleted, pagination)
+        products = self.product_service.get_products(is_generic=is_generic, is_deleted=is_deleted, pagination=pagination)
         serializer = ProductRetrieveSerializer(products, many=True)
         return Response(serializer.data)
 

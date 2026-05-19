@@ -2,8 +2,8 @@ from drf_serializer_shaper.mixins import DynamicFieldsMixin
 from rest_framework import serializers
 
 from .models import ProductCategory
-from ..user.serializer import UserSerializer
-
+from user.serializer import UserSerializer
+# from apps.user.serializer import UserSerializer
 
 class ProductCategorySerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     created_by = UserSerializer(read_only=True)

@@ -1,5 +1,5 @@
-from product.repository import ProductRepository
-from product.services import ProductService
+from .repository import ProductRepository
+from .services import ProductService
 
 
 class ProductContainer:

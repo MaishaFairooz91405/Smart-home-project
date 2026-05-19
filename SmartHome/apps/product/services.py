@@ -1,10 +1,10 @@
-from django.shortcuts import get_object_or_404
-from rest_framework.response import Response
-
-from product.repository import ProductRepository
-from product.serializers.retrieve import ProductRetrieveSerializer
-from utilis.filter import get_filters
-from utilis.pagination import PaginationService
+# from django.shortcuts import get_object_or_404
+# from rest_framework.response import Response
+#
+# from product.repository import ProductRepository
+from .serializers.retrieve import ProductRetrieveSerializer
+from apps.common.utilis.filter import get_filters
+# from utilis.pagination import PaginationService
 
 
 class ProductService:
@@ -28,13 +28,14 @@ class ProductService:
     def get_products(self, is_generic=None, is_deleted=None, pagination=None):
         filters = get_filters(
             is_generic=is_generic,
-            is_deleted=is_deleted
-        )
+            is_deleted=is_deleted)
+        return self.product_repository.get(filters)
+
         products = self.product_repository.get(filters, pagination)
-        product_paginated = PaginationService(products, pagination).paginate()
-        product_response = self._serialize_get(product_paginated.data, many=True)
-        product_paginated['data'] = product_response
-        return product_response
+        # product_paginated = PaginationService(products, pagination).paginate()
+        # product_response = self._serialize_get(product_paginated.data, many=True)
+        # product_paginated['data'] = product_response
+        # return product_response
 
     def get_product_by_id(self, id, is_generic=None, is_deleted=None):
         filters = get_filters(

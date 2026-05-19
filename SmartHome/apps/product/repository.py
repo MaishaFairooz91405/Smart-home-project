@@ -1,7 +1,9 @@
 from django.shortcuts import get_object_or_404
-from utilis.filter import get_filters
-from apps.product.models import Product
 
+
+from apps.common.utilis.filter import get_filters
+# from product.models import Product
+from ..models import Product
 
 class ProductRepository:
 
@@ -21,7 +23,7 @@ class ProductRepository:
         return True
 
     def get(self, filters):
-        return Product.objects.filter(**filters)
+        return Product.objects.filter(**filters).order_by('id')
 
     def get_by_id(self, filters):
         return Product.objects.filter(**filters).first()

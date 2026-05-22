@@ -1,6 +1,6 @@
 from rest_framework.response import Response
 from rest_framework import status
-from constants import PRODUCT_ALREADY_DELETED, PRODUCT_SOFT_DELETED_SUCCESSFULLY, PRODUCT_NOT_FOUND
+from common.constants import PRODUCT_ALREADY_DELETED, PRODUCT_SOFT_DELETED_SUCCESSFULLY, PRODUCT_NOT_FOUND
 from .serializers.product_retrieve import ProductRetrieveSerializer
 from common.utilis.filter import get_filters
 

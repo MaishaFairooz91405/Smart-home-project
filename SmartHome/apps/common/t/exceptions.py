@@ -1,2 +1,0 @@
-class InvalidFieldError(AttributeError):
-    pass

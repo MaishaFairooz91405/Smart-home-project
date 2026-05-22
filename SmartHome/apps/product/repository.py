@@ -1,6 +1,4 @@
-from django.shortcuts import get_object_or_404
-from utilis.filter import get_filters
-from apps.product.models import Product
+from product.models import Product
 
 
 class ProductRepository:
@@ -8,20 +6,23 @@ class ProductRepository:
     def create(self, data):
         return Product.objects.create(**data)
 
-    def update(self, data):
-        product = Product.objects.get(pk=data['id'])
-        product.title = data.get('title', product.title)
-        product.description = data.get('description', product.description)
-        product.save()
-        return product
+    def get_by_id(self, product_id):
+        return Product.objects.get(pk=product_id)
 
-    def delete(self, data):
-        product = Product.objects.get(pk=data['id'])
+    def update(self, instance, data):
+        for attr, value in data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        return instance
+
+    def delete(self, product):
         product.delete()
         return True
 
-    def get(self, filters):
-        return Product.objects.filter(**filters)
+    def soft_delete(self, product):
+        product.is_deleted = True
+        product.save(update_fields=["is_deleted"])
+        return product
 
-    def get_by_id(self, filters):
-        return Product.objects.filter(**filters).first()
+    def get(self, filters):
+        return Product.objects.filter(**filters).order_by('id')

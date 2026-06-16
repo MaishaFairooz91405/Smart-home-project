@@ -4,14 +4,14 @@ from rest_framework import status
 
 from django.apps import apps
 from product.models import Product
-from apps.common.utilis.common_method import parse_is_generic
-from utilis.pagination import ProductCursorPagination
+from common.utilis.common_method import parse_is_generic
+from common.utilis.pagination import ProductCursorPagination
 from ..serializers.product_retrieve import ProductRetrieveSerializer
 from ..serializers.product_create import ProductCreateSerializer
 from ..serializers.product_create import ProductBulkCreateSerializer
 from ..serializers.product_update import ProductUpdateSerializer
 from ..containers import ProductContainer
-from utilis.common_method import parse_is_deleted
+from common.utilis.common_method import parse_is_deleted
 
 
 class ProductListAPIView(APIView):
@@ -37,7 +37,7 @@ class ProductListAPIView(APIView):
         serializer = ProductRetrieveSerializer(paginated_products, many=True)
         return self.paginator.get_paginated_response(serializer.data)
 
-    def bulk_post(self, request):
+    def post(self, request):
         serializer = ProductBulkCreateSerializer(
             data=request.data,
             many=True,
@@ -63,10 +63,10 @@ class ProductDetailAPIView(APIView):
             serializer = ProductRetrieveSerializer(product)
             return Response(serializer.data)
 
-        except Exception as e:
+        except Exception as e: 
             return Response({"error": str(e)}, status=404)
 
-    def single_post(self, request):
+    def post(self, request):
         serializer = ProductCreateSerializer(data=request.data, context={"request": request})
         if serializer.is_valid():
             product = self.product_service.create_product(serializer.validated_data)

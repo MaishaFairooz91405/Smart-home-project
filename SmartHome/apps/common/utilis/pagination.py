@@ -3,8 +3,10 @@ from urllib import parse
 from rest_framework.exceptions import NotFound
 from rest_framework.pagination import CursorPagination, Cursor
 from rest_framework.utils.urls import replace_query_param
+from rest_framework.pagination import PageNumberPagination
 
 
+#
 class ProductCursorPagination(CursorPagination):
     page_size = 4
     page_size_query_param = "size"
@@ -47,3 +49,11 @@ class ProductCursorPagination(CursorPagination):
 
         except Exception:
             raise NotFound("Invalid cursor")
+
+
+class InventoryPagination(PageNumberPagination):
+    page_size = 4
+    page_size_query_param = "size"
+    page_query_param = "page"
+    max_page_size = 100
+    ordering = 'id'

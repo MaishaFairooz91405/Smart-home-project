@@ -1,11 +1,14 @@
+from drf_serializer_shaper.mixins import DynamicFieldsMixin
 from rest_framework import serializers
-from .models import ProductCategory
-from ..user.serializer import UserSerializer
+
+from product.models import ProductCategory
+from user.serializer import UserSerializer
 
 
-class ProductCategorySerializer(serializers.ModelSerializer):
+class ProductCategorySerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     created_by = UserSerializer(read_only=True)
     updated_by = UserSerializer(read_only=True)
+
     class Meta:
         model = ProductCategory
         fields = '__all__'
@@ -16,10 +19,4 @@ class ProductCategorySerializer(serializers.ModelSerializer):
         validated_data["created_by"] = user
         validated_data["updated_by"] = user
         return super().create(validated_data)
-
-    def update(self, instance, validated_data):
-        user = self.context["request"].user
-        validated_data["updated_by"] = user
-        return super().update(instance, validated_data)
-
 

@@ -45,7 +45,11 @@ class InventoryListAPIView(APIView):
 
 
 class InventoryDetailAPIView(APIView):
-    def get(self, request, id):
+    def get(self, request,id=None):
+        if id is None:
+            return Response({"error": "ID is required for this endpoint"},
+            status=400
+        )
         try:
             product = get_inventory_product_by_id(id)
             serializer = ProductRetrieveSerializer(product)

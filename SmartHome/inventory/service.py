@@ -15,8 +15,8 @@ def create_inventory_product(validated_data):
         created_objects = Inventory.objects.bulk_create(instances)
         return created_objects
 
-    # instance = Inventory.objects.create(**validated_data)
-    # return instance
+    instance = Inventory.objects.create(**validated_data)
+    return instance
 
 
 def update_inventory_product(data, product_id):

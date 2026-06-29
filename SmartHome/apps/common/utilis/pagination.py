@@ -57,3 +57,11 @@ class InventoryPagination(PageNumberPagination):
     page_query_param = "page"
     max_page_size = 100
     ordering = 'id'
+
+class RoomPagination(PageNumberPagination):
+    page_size = 4
+    page_size_query_param = "size"
+    page_query_param = "page"
+    max_page_size = 100
+    ordering = 'id'
+

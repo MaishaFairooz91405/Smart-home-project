@@ -6,6 +6,7 @@ from django.apps import apps
 from product.models import Product
 from common.utilis.common_method import parse_is_generic
 from common.utilis.pagination import ProductCursorPagination
+from schema import PRODUCT__GET_LIST_SCHEMA,PRODUCT_BULK_POST_SCHEMA,PRODUCT_GET_BY_ID,PRODUCT_SINGLE_POST_SCHEMA,PRODUCT_PUT_SCHEMA,PRODUCT_DELETE_SCHEMA
 from ..serializers.product_retrieve import ProductRetrieveSerializer
 from ..serializers.product_create import ProductCreateSerializer
 from ..serializers.product_create import ProductBulkCreateSerializer
@@ -14,10 +15,11 @@ from ..containers import ProductContainer
 from common.utilis.common_method import parse_is_deleted
 
 
+
 class ProductListAPIView(APIView):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.product_service = None    #Don't want to initialize in the class level.
+        self.product_service = None  # Don't want to initialize in the class level.
         self.paginator = ProductCursorPagination()
 
     def _get_service(self):
@@ -25,7 +27,9 @@ class ProductListAPIView(APIView):
             self.product_service = apps.get_app_config("product").container.product_service()
         return self.product_service
 
+    @PRODUCT__GET_LIST_SCHEMA
     def get(self, request):
+
         try:
             is_generic = parse_is_generic(request.query_params.get("is_generic"))
             is_deleted = parse_is_deleted(request.query_params.get("is_deleted"))
@@ -37,7 +41,9 @@ class ProductListAPIView(APIView):
         serializer = ProductRetrieveSerializer(paginated_products, many=True)
         return self.paginator.get_paginated_response(serializer.data)
 
+    @PRODUCT_BULK_POST_SCHEMA
     def post(self, request):
+
         serializer = ProductBulkCreateSerializer(
             data=request.data,
             many=True,
@@ -57,16 +63,20 @@ class ProductDetailAPIView(APIView):
         super().__init__()
         self.product_service = ProductContainer.product_service()
 
+    @PRODUCT_GET_BY_ID
     def get(self, request, id):
+
         try:
             product = self.product_service.get_product_by_id(id)
             serializer = ProductRetrieveSerializer(product)
             return Response(serializer.data)
 
-        except Exception as e: 
+        except Exception as e:
             return Response({"error": str(e)}, status=404)
 
+    @PRODUCT_SINGLE_POST_SCHEMA
     def post(self, request):
+
         serializer = ProductCreateSerializer(data=request.data, context={"request": request})
         if serializer.is_valid():
             product = self.product_service.create_product(serializer.validated_data)
@@ -74,6 +84,7 @@ class ProductDetailAPIView(APIView):
             return Response(response_serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @PRODUCT_PUT_SCHEMA
     def put(self, request, id):
         serializer = ProductUpdateSerializer(data=request.data, context={"request": request})
         if serializer.is_valid():
@@ -93,6 +104,7 @@ class ProductDetailAPIView(APIView):
                 )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @PRODUCT_DELETE_SCHEMA
     def delete(self, request, id):
         is_hard_delete = request.query_params.get("is_hard_delete", "false").lower() == "true"
         result = self.product_service.delete_product(id, hard_delete=is_hard_delete)

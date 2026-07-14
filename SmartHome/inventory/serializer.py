@@ -3,10 +3,10 @@ from apps.user.serializer import UserSerializer
 from product.models import ProductCategory
 from room.models import Room
 from .models import Inventory
-from product.serializers.product_category import ProductCategorySerializer
+from apps.product.serializers.product_category import ProductCategorySerializer
 
 
-class ProductRetrieveSerializer(serializers.ModelSerializer):
+class InventoryProductRetrieveSerializer(serializers.ModelSerializer):
     created_by = UserSerializer(read_only=True)
     updated_by = UserSerializer(read_only=True)
     product_category = ProductCategorySerializer(include=['id', 'title', 'is_deleted'], read_only=True)

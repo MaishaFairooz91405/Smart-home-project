@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django_filters',
     'rest_framework',
     'rest_framework.authtoken',
+    'drf_spectacular',
     # 'apps.product',
     # 'apps.user',
     # 'apps.common',
@@ -55,8 +56,14 @@ INSTALLED_APPS = [
 ]
 REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS": [
-        "django_filters.rest_framework.DjangoFilterBackend",
-    ]
+        "django_filters.rest_framework.DjangoFilterBackend"],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Smart Home API",
+    "DESCRIPTION": "API documentation for Smart Home Management System",
+    "VERSION": "1.0.0",
 }
 
 MIDDLEWARE = [

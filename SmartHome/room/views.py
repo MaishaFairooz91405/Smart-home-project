@@ -4,15 +4,18 @@ from rest_framework.views import APIView
 from common.utilis.pagination import RoomPagination
 from common.utilis.common_method import parse_is_deleted
 from user.serializer import UserSerializer
+from .schema import ROOM_GET_BY_LIST_SCHEMA, ROOM_BULK_POST_SCHEMA, ROOM_GET_BY_ID_SCHEMA, ROOM_SINGLE_POST_SCHEMA, \
+    ROOM_PUT_SCHEMA, ROOM_DELETE_SCHEMA
 from .selectors import get_rooms, get_room_by_id
 from .serializer import RoomRetrieveSerializer, RoomBulkCreateSerializer, RoomCreateSerializer, RoomUpdateSerializer
-from .service import create_rooms, create_room, update_room,delete_room,delete_user_from_room
+from .service import create_rooms, create_room, update_room, delete_room, delete_user_from_room
 from .models import Room
 
 
 class RoomListAPIView(APIView):
     pagination_class = RoomPagination
 
+    @ROOM_GET_BY_LIST_SCHEMA
     def get(self, request):
         rooms = get_rooms(filters=request.query_params)
         paginator = self.pagination_class()
@@ -20,6 +23,7 @@ class RoomListAPIView(APIView):
         serializer = RoomRetrieveSerializer(page, many=True)
         return paginator.get_paginated_response(serializer.data)
 
+    @ROOM_BULK_POST_SCHEMA
     def post(self, request):
         serializer = RoomBulkCreateSerializer(
             data=request.data,
@@ -46,6 +50,7 @@ class RoomListAPIView(APIView):
 
 class RoomDetailAPIView(APIView):
 
+    @ROOM_GET_BY_ID_SCHEMA
     def get(self, request, id=None):
         if id is None:
             return Response({"error": "ID is required for this endpoint"},
@@ -61,6 +66,7 @@ class RoomDetailAPIView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=404)
 
+    @ROOM_SINGLE_POST_SCHEMA
     def post(self, request):
         serializer = RoomCreateSerializer(
             data=request.data,
@@ -82,6 +88,7 @@ class RoomDetailAPIView(APIView):
             status=status.HTTP_400_BAD_REQUEST
         )
 
+    @ROOM_PUT_SCHEMA
     def put(self, request, id):
         room = get_room_by_id(id)
         if room.is_deleted:
@@ -101,6 +108,7 @@ class RoomDetailAPIView(APIView):
                 )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @ROOM_DELETE_SCHEMA
     def delete(self, request, id):
 
         user_id = request.query_params.get("user_id")
